@@ -201,58 +201,114 @@ body.attack-mode::before {
 }
 
 /* Stack Animation Styles */
+/* Stack Animation Styles */
 .stack-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     height: 400px;
     position: relative;
-    border: 1px dashed rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(59, 130, 246, 0.1) 50%, rgba(0, 0, 0, 0) 100%),
+        repeating-linear-gradient(0deg, transparent 0px, transparent 1px, rgba(59, 130, 246, 0.05) 2px, transparent 3px),
+        rgba(0, 0, 0, 0.6);
+    background-size: 100% 200%, 100% 4px, 100% 100%;
+    animation: scanContainer 4s linear infinite;
     border-radius: 8px;
     padding: 20px;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
 }
 
+@keyframes scanContainer {
+    0% {
+        background-position: 0% -100%, 0 0, 0 0;
+    }
+
+    100% {
+        background-position: 0% 200%, 0 0, 0 0;
+    }
+}
+
+/* Holographic Stack Boxes */
 .stack-box {
-    width: 120px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    margin-bottom: 5px;
+    /* Removed fixed width/height/absolute here as they are set inline or by flex */
+    /* Transition is critical for the syncrhonized movement */
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     font-weight: bold;
     color: white;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-    transition: all 0.5s ease;
+
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(2px);
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+
+    /* Flex Layout for Nesting */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /* Clip inner content */
+}
+
+/* Label for the Box */
+.layer-label {
     position: absolute;
-    opacity: 0;
+    top: 4px;
+    left: 4px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    pointer-events: none;
+    z-index: 20;
+    text-shadow: 0 0 5px currentColor;
 }
 
-.box-data {
-    background: #a855f7;
-    z-index: 10;
+/* When Box is Child (Nested) */
+.stack-box .stack-box {
+    /* Inner boxes don't need absolute positioning, they follow flex/transform */
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    margin: 0 !important;
+    border-width: 1px;
+    /* Thinner borders? */
+    box-shadow: none;
+    /* Reduce shadow buildup */
 }
 
-.box-tcp {
-    background: #06b6d4;
-    width: 140px;
-    height: 50px;
-    z-index: 9;
+.stack-box.snap-effect {
+    animation: boxSnap 0.4s ease-out forwards;
+    border-color: white;
 }
 
-.box-ip {
-    background: #10b981;
-    width: 160px;
-    height: 60px;
-    z-index: 8;
+@keyframes boxSnap {
+    0% {
+        filter: brightness(2) contrast(1.2);
+    }
+
+    100% {
+        filter: brightness(1) contrast(1);
+    }
 }
 
-.box-eth {
-    background: #f97316;
-    width: 180px;
-    height: 70px;
-    z-index: 7;
+/* Specific Holographic Colors */
+.box-l2 {
+    border-color: #f97316;
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+}
+
+/* Hover X-Ray Effect */
+.stack-container:hover .stack-box {
+    background: rgba(0, 0, 0, 0.8);
+    /* Darken to make glowing borders pop */
 }
