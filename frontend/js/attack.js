@@ -15,6 +15,9 @@ export class AttackSim {
         this.ui.log("⚠️ DDOS SIGNATURE DETECTED ⚠️", "attack");
         this.ui.log("Source: 192.168.1.X (Botnet)", "attack");
 
+        // Show Attack details on cards
+        this.ui.showAttackDiagnostics();
+
         // Spike the chart
         let i = 0;
         this.interval = setInterval(() => {
@@ -50,6 +53,9 @@ export class AttackSim {
         clearInterval(this.interval);
         document.body.classList.remove('attack-mode');
         this.ui.log("Attack mitigated. Firewalls active.", "info");
+
+        // Reset cards
+        this.ui.resetAttackDiagnostics();
 
         // Reset Chart Color
         const chart = this.ui.latencyChart;

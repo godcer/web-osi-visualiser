@@ -49,12 +49,69 @@ Physical addressing for the local hop.
 - **Key Data**: Source MAC, Gateway MAC (Router).
             `
         };
+
+        // Attack Scenarios for Simulation (Unified DDoS Narrative)
+        this.layerAttacks = {
+            '7': { title: "HTTP FLOOD DETECTED", desc: "Server overwhelmed by 50,000 GET requests/sec. Service Unavailable (503)." },
+            '6': { title: "SSL EXHAUSTION", desc: "CPU 100% Load. Crypto-accelerators failed attempting to decrypt bogus handshakes." },
+            '5': { title: "SESSION TABLE FULL", desc: "Max concurrent sessions (1M+) reached. Valid users cannot login." },
+            '4': { title: "SYN FLOOD", desc: "TCP State Exhaustion. 10,000+ half-open connections. Backlog queue full." },
+            '3': { title: "BANDWIDTH SATURATION", desc: "Link capacity exceeded. Inbound traffic 10Gbps > 1Gbps Uplink." },
+            '12': { title: "SWITCH BUFFER OVERFLOW", desc: "Frame buffer memory exhausted. Random packet drop (Tail Drop) active." }
+        };
     }
 
     init() {
         this.initLog();
         this.initChart();
         this.initCardFlips();
+    }
+
+    showAttackDiagnostics() {
+        document.querySelectorAll('.layer-card').forEach(card => {
+            const osi = card.getAttribute('data-osi');
+            const attack = this.layerAttacks[osi];
+            const contentDiv = card.querySelector('[id$="-content"]') || card.querySelector('.card-front'); // Fallback to front content container
+
+            if (contentDiv && attack) {
+                // Save original content? For now we just overwrite, resetDashboard restores it.
+                // Or better, we make the card turn RED.
+
+                card.classList.add('attack-mode');
+                // We update the INNER HTML of the content div to show the alert
+                // Find or create a specific diagnostic container to avoid breaking structure
+
+                // Simpler: Just replace innerHTML of the content area (e.g. #l7-content)
+                // Note: L2 is slightly different structure in HTML, handled by ID check or generic query
+                const targetDisplay = document.getElementById(`l${osi}-content`) || document.getElementById(`l12-content`);
+
+                if (targetDisplay) {
+                    targetDisplay.innerHTML = `
+                        <div class="animate-pulse flex items-start space-x-2 text-red-400">
+                             <span class="text-lg">⚠</span>
+                             <div>
+                                 <div class="font-bold text-xs uppercase tracking-wider text-red-500 glitch" data-text="${attack.title}">${attack.title}</div>
+                                 <div class="text-[10px] text-red-300/80 mt-1 font-mono">${attack.desc}</div>
+                             </div>
+                        </div>
+                     `;
+                }
+            }
+        });
+
+        this.log("CRITICAL: MULTI-LAYER COMPROMISE DETECTED", "error");
+    }
+
+    resetAttackDiagnostics() {
+        document.querySelectorAll('.layer-card').forEach(card => card.classList.remove('attack-mode'));
+        // Content will clear naturally on next scan or we can force reset text
+        // For now, let's just clear
+        ['7', '6', '5', '4', '3'].forEach(l => {
+            const el = document.getElementById(`l${l}-content`);
+            if (el) el.innerHTML = "Waiting for data...";
+        });
+        const l12 = document.getElementById('l12-content');
+        if (l12) l12.innerHTML = "MAC / SWITCH";
     }
 
     initCardFlips() {
