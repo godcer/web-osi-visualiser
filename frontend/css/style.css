@@ -1,0 +1,91 @@
+
+/* Font Imports */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+/* Base Styles */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.font-mono {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Glassmorphism */
+.glass {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Animations & Interactions */
+.layer-card {
+    transition: all 0.3s ease;
+}
+
+.layer-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.3);
+}
+
+/* Tooltip */
+.tooltip-trigger:hover .tooltip-content {
+    display: block;
+}
+
+/* Packet Viz Styles */
+.packet-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 10px;
+}
+
+.packet-header {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.packet-header:hover {
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+.ph-eth { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+.ph-ip { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+.ph-tcp { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+.ph-app { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+
+/* Scrollbars */
+.terminal-scroll::-webkit-scrollbar { width: 6px; }
+.terminal-scroll::-webkit-scrollbar-track { background: #1e293b; }
+.terminal-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+
+/* Timeline */
+.timeline-line {
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(59, 130, 246, 0.3);
+}
+
+.timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #3b82f6;
+    position: absolute;
+    left: 10px;
+    top: 24px;
+    border: 2px solid #0f172a;
+}
