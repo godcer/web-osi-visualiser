@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,257 +7,148 @@
     <title>Web OSI Intelligence Analyzer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="/static/css/style.css" rel="stylesheet">
 </head>
 
-<body
-    class="bg-[#0B1120] text-slate-200 min-h-screen p-4 md:p-8 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
+<body class="min-h-screen p-4 md:p-8">
 
-    <div class="max-w-7xl mx-auto space-y-6">
-        <!-- Header & AI Score -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 space-y-6">
-                <header>
-                    <h1
-                        class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 mb-2 tracking-tight">
-                        Web OSI Intelligence Analyzer
-                    </h1>
-                    <p class="text-slate-400 font-light">Advanced Full-Stack Network Reconnaissance System</p>
-                </header>
+    <div class="max-w-[1600px] mx-auto space-y-6">
+        <!-- Dashboard Toolbar -->
+        <header class="flex justify-between items-center mb-8 glass p-4 rounded-xl">
+            <div>
+                <h1
+                    class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400 tracking-tight">
+                    WEB OSI INTELLIGENCE
+                </h1>
+                <div class="flex gap-4 text-[10px] text-slate-400 font-mono mt-1">
+                    <span>SYSTEM: <span class="text-emerald-400">ONLINE</span></span>
+                    <span>THREAT LEVEL: <span class="text-blue-400">LOW</span></span>
+                </div>
+            </div>
 
-                <!-- Input Section -->
-                <div class="glass p-1 rounded-xl shadow-2xl flex gap-2">
-                    <input type="text" id="targetUrl" placeholder="Enter target URL (e.g., google.com)"
-                        class="flex-1 bg-slate-900/50 border border-slate-700/50 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors font-mono text-sm text-white placeholder-slate-600">
-                    <button onclick="startAnalysis()"
-                        class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-medium transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2">
-                        <span>SCAN</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
+            <div class="flex gap-4">
+                <button onclick="window.triggerAttack()"
+                    class="px-4 py-2 border border-red-500/50 text-red-400 rounded hover:bg-red-500/10 font-mono text-xs font-bold transition-all hover:scale-105">
+                    ⚠ SIMULATE ATTACK
+                </button>
+                <button onclick="window.toggleHolo()"
+                    class="px-4 py-2 border border-cyan-500/50 text-cyan-400 rounded hover:bg-cyan-500/10 font-mono text-xs font-bold transition-all hover:scale-105">
+                    🧊 HOLO VIEW
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-12 gap-6">
+            <!-- Left Col: Encapsulation Stack (Showcase Feature) -->
+            <div class="col-span-12 lg:col-span-3">
+                <div class="glass rounded-xl p-6 h-full flex flex-col">
+                    <h3
+                        class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 border-b border-white/5 pb-2">
+                        Encapsulation Engine</h3>
+                    <div id="stack-container" class="stack-container flex-1">
+                        <!-- Stack Boxes Appended Here -->
+                    </div>
+                    <button onclick="window.playStack()"
+                        class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded font-mono text-xs font-bold">
+                        ▶ PLAY ANIMATION
                     </button>
                 </div>
-
-                <!-- 3D Visualization Container -->
-                <div class="glass rounded-xl p-6 border-t border-slate-700/50 relative h-64 overflow-hidden" id="viz-container">
-                    <div class="absolute inset-0 flex items-center justify-center text-slate-600 text-xs uppercase tracking-widest z-10 pointer-events-none">
-                        3D Network Topology
-                    </div>
-                </div>
-
-                <!-- Packet Visualizer (Legacy / Detail View) -->
-                <div class="glass rounded-xl p-6 border-t border-slate-700/50">
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Packet Encapsulation
-                        Visualizer</h3>
-                    <div class="packet-container bg-slate-900/50 rounded-lg border border-slate-800">
-                        <div class="packet-header ph-eth group relative">
-                            L2: ETHERNET FRAME
-                            <div
-                                class="absolute top-full left-0 mt-2 w-48 bg-slate-800 p-2 rounded text-[10px] hidden group-hover:block shadow-xl z-20 border border-slate-700">
-                                <div class="text-orange-400 font-mono">Dest MAC: <span id="viz-mac">Loading...</span>
-                                </div>
-                                <div class="text-slate-400">Type: IPv4 (0x0800)</div>
-                            </div>
-                        </div>
-                        <div class="text-slate-600 font-mono text-xs">→</div>
-                        <div class="packet-header ph-ip group relative">
-                            L3: IP PACKET
-                            <div
-                                class="absolute top-full left-0 mt-2 w-48 bg-slate-800 p-2 rounded text-[10px] hidden group-hover:block shadow-xl z-20 border border-slate-700">
-                                <div class="text-emerald-400 font-mono">Dest IP: <span id="viz-ip">Loading...</span>
-                                </div>
-                                <div class="text-slate-400">TTL: 64</div>
-                            </div>
-                        </div>
-                        <div class="text-slate-600 font-mono text-xs">→</div>
-                        <div class="packet-header ph-tcp group relative">
-                            L4: TCP SEGMENT
-                            <div
-                                class="absolute top-full left-0 mt-2 w-48 bg-slate-800 p-2 rounded text-[10px] hidden group-hover:block shadow-xl z-20 border border-slate-700">
-                                <div class="text-cyan-400 font-mono">Dest Port: 443</div>
-                                <div class="text-slate-400">Flags: SYN</div>
-                            </div>
-                        </div>
-                        <div class="text-slate-600 font-mono text-xs">→</div>
-                        <div class="packet-header ph-app group relative">
-                            L7: HTTP DATA
-                            <div
-                                class="absolute top-full left-0 mt-2 w-64 bg-slate-800 p-2 rounded text-[10px] hidden group-hover:block shadow-xl z-20 border border-slate-700">
-                                <div class="text-purple-400 font-mono">GET / HTTP/1.1</div>
-                                <div class="text-slate-400">Host: <span id="viz-host">...</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- AI Analyst Panel -->
-            <div class="glass rounded-xl p-6 border-t-4 border-blue-500 flex flex-col relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-10">
-                    <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.75l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" />
-                    </svg>
-                </div>
-                <h2 class="text-xl font-bold text-white mb-1 flex items-center gap-2">
-                    <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                    CORTEX AI Analyst
-                </h2>
-                <p class="text-xs text-blue-300 mb-6">Automated Threat Intelligence</p>
-
-                <div class="flex-1 flex flex-col items-center justify-center mb-6">
-                    <div class="relative w-32 h-32 flex items-center justify-center">
-                        <svg class="w-full h-full transform -rotate-90">
-                            <circle cx="64" cy="64" r="60" stroke="#1e293b" stroke-width="8" fill="none" />
-                            <circle id="score-circle" cx="64" cy="64" r="60" stroke="#3b82f6" stroke-width="8"
-                                fill="none" stroke-dasharray="377" stroke-dashoffset="377"
-                                class="transition-all duration-1000 ease-out" />
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span id="ai-score" class="text-4xl font-bold text-white">--</span>
-                            <span class="text-[10px] text-slate-400 uppercase">Security Score</span>
-                        </div>
+            <!-- Middle Col: Layer Cards (Code Flip) -->
+            <div class="col-span-12 lg:col-span-5 space-y-4">
+                <!-- Layers 7-1 -->
+                <div class="layer-card glass rounded-lg p-0" data-osi="7">
+                    <div class="bg-purple-500/10 p-4 border-b border-white/5 flex justify-between items-center">
+                        <h2 class="font-bold text-purple-400">L7 APPLICATION</h2>
+                        <span class="text-[10px] font-mono text-purple-300/50">HTTP / DNS</span>
                     </div>
-                    <div id="ai-grade" class="mt-2 text-lg font-bold text-blue-400">--</div>
+                    <div id="l7-content" class="p-4 text-xs text-slate-300">Waiting for data...</div>
                 </div>
 
-                <div
-                    class="bg-slate-900/50 rounded-lg p-3 text-xs text-slate-300 h-32 overflow-y-auto terminal-scroll border border-slate-800">
-                    <div id="ai-summary" class="space-y-2">
-                        <p class="opacity-50">Waiting for analysis data...</p>
+                <div class="layer-card glass rounded-lg p-0" data-osi="6">
+                    <div class="bg-indigo-500/10 p-4 border-b border-white/5 flex justify-between items-center">
+                        <h2 class="font-bold text-indigo-400">L6 PRESENTATION</h2>
+                        <span class="text-[10px] font-mono text-indigo-300/50">TLS / ENCRYPTION</span>
+                    </div>
+                    <div id="l6-content" class="p-4 text-xs text-slate-300">Waiting for data...</div>
+                </div>
+
+                <div class="layer-card glass rounded-lg p-0" data-osi="5">
+                    <div class="bg-blue-500/10 p-4 border-b border-white/5 flex justify-between items-center">
+                        <h2 class="font-bold text-blue-400">L5 SESSION</h2>
+                        <span class="text-[10px] font-mono text-blue-300/50">COOKIES / SOCKETS</span>
+                    </div>
+                    <div id="l5-content" class="p-4 text-xs text-slate-300">Waiting for data...</div>
+                </div>
+
+                <div class="layer-card glass rounded-lg p-0" data-osi="4">
+                    <div class="bg-cyan-500/10 p-4 border-b border-white/5 flex justify-between items-center">
+                        <h2 class="font-bold text-cyan-400">L4 TRANSPORT</h2>
+                        <span class="text-[10px] font-mono text-cyan-300/50">TCP / UDP</span>
+                    </div>
+                    <div id="l4-content" class="p-4 text-xs text-slate-300">Waiting for data...</div>
+                </div>
+
+                <div class="layer-card glass rounded-lg p-0" data-osi="3">
+                    <div class="bg-emerald-500/10 p-4 border-b border-white/5 flex justify-between items-center">
+                        <h2 class="font-bold text-emerald-400">L3 NETWORK</h2>
+                        <span class="text-[10px] font-mono text-emerald-300/50">IP / ROUTING</span>
+                    </div>
+                    <div id="l3-content" class="p-4 text-xs text-slate-300">Waiting for data...</div>
+                </div>
+
+                <!-- Compact Lower Layers -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="layer-card glass rounded-lg p-0" data-osi="12">
+                        <div class="bg-orange-500/10 p-3 border-b border-white/5">
+                            <h2 class="font-bold text-orange-400 text-xs">L2 DATA LINK</h2>
+                        </div>
+                        <div id="l12-content" class="p-3 text-[10px] text-slate-300">MAC / SWITCH</div>
+                    </div>
+                    <div
+                        class="glass rounded-lg p-3 flex flex-col justify-center items-center text-slate-500 border border-white/5">
+                        <span class="text-xs">L1 PHYSICAL</span>
+                        <div class="w-full h-1 bg-gradient-to-r from-transparent via-slate-600 to-transparent mt-2">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Model Toggle -->
-        <div class="flex justify-center mb-6">
-            <div class="glass p-1 rounded-lg flex gap-1">
-                <button onclick="setModel('osi')" id="btn-osi"
-                    class="px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white transition-all">OSI Model (7
-                    Layers)</button>
-                <button onclick="setModel('tcpip')" id="btn-tcpip"
-                    class="px-4 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all">TCP/IP
-                    Model (4 Layers)</button>
-            </div>
-        </div>
-
-        <!-- Dashboard Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="dashboard">
-            <!-- Layer 7 -->
-            <div class="layer-card glass rounded-xl p-6 border-t-2 border-purple-500/50" data-osi="7"
-                data-tcp="Application">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold text-purple-400">Layer 7: Application</h2>
-                    <span
-                        class="text-[10px] bg-purple-500/10 text-purple-300 px-2 py-1 rounded border border-purple-500/20">HTTP/DNS</span>
+            <!-- Right Col: 3D Viz & Scanner -->
+            <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+                <!-- Input -->
+                <div class="glass p-2 rounded-xl flex gap-2">
+                    <input type="text" id="targetUrl" placeholder="TARGET URL"
+                        class="flex-1 bg-black/50 border border-slate-700/50 rounded px-4 py-2 font-mono text-xs text-white placeholder-slate-600 focus:border-blue-500 outline-none">
+                    <button onclick="startAnalysis()"
+                        class="bg-blue-600 hover:bg-blue-500 text-white px-6 rounded font-bold text-xs">SCAN</button>
                 </div>
-                <div id="l7-content" class="space-y-3 text-sm text-slate-300 min-h-[100px]"></div>
-            </div>
 
-            <!-- Layer 6 -->
-            <div class="layer-card glass rounded-xl p-6 border-t-2 border-indigo-500/50" data-osi="6"
-                data-tcp="Application">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold text-indigo-400">Layer 6: Presentation</h2>
-                    <span
-                        class="text-[10px] bg-indigo-500/10 text-indigo-300 px-2 py-1 rounded border border-indigo-500/20">TLS/SSL</span>
-                </div>
-                <div id="l6-content" class="space-y-3 text-sm text-slate-300 min-h-[100px]"></div>
-            </div>
+                <!-- 3D Container -->
+                <div class="glass rounded-xl h-64 relative overflow-hidden" id="viz-container"></div>
 
-            <!-- Layer 5 -->
-            <div class="layer-card glass rounded-xl p-6 border-t-2 border-blue-500/50" data-osi="5"
-                data-tcp="Application">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold text-blue-400">Layer 5: Session</h2>
-                    <span
-                        class="text-[10px] bg-blue-500/10 text-blue-300 px-2 py-1 rounded border border-blue-500/20">Cookies</span>
+                <!-- Terminal -->
+                <div class="glass rounded-xl flex-1 flex flex-col min-h-[200px]">
+                    <div class="bg-black/40 px-4 py-2 border-b border-white/5 flex items-center justify-between">
+                        <span class="text-[10px] font-mono text-slate-500">> SYSTEM_LOG</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    </div>
+                    <div id="terminal-log"
+                        class="p-4 font-mono text-[10px] text-emerald-500/80 overflow-y-auto flex-1 terminal-scroll space-y-1 h-32">
+                        <div>> Initializing Neural Interface...</div>
+                    </div>
+                    <!-- Chart moved inside terminal for "Hacker" feel -->
+                    <div class="h-20 border-t border-white/5 bg-black/20 p-2">
+                        <canvas id="latencyChart"></canvas>
+                    </div>
                 </div>
-                <div id="l5-content" class="space-y-3 text-sm text-slate-300 min-h-[100px]"></div>
-            </div>
-
-            <!-- Layer 4 -->
-            <div class="layer-card glass rounded-xl p-6 border-t-2 border-cyan-500/50" data-osi="4"
-                data-tcp="Transport">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold text-cyan-400">Layer 4: Transport</h2>
-                    <span
-                        class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2 py-1 rounded border border-cyan-500/20">TCP/UDP</span>
-                </div>
-                <div id="l4-content" class="space-y-3 text-sm text-slate-300 min-h-[100px]"></div>
-            </div>
-
-            <!-- Layer 3 -->
-            <div class="layer-card glass rounded-xl p-6 border-t-2 border-emerald-500/50" data-osi="3"
-                data-tcp="Internet">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold text-emerald-400">Layer 3: Network</h2>
-                    <span
-                        class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded border border-emerald-500/20">IP/Routing</span>
-                </div>
-                <div id="l3-content" class="space-y-3 text-sm text-slate-300 min-h-[100px]"></div>
-            </div>
-
-            <!-- Layer 1 & 2 -->
-            <div class="layer-card glass rounded-xl p-6 border-t-2 border-orange-500/50" data-osi="12" data-tcp="Link">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold text-orange-400">Layer 1 & 2: Physical</h2>
-                    <span
-                        class="text-[10px] bg-orange-500/10 text-orange-300 px-2 py-1 rounded border border-orange-500/20">HW/Link</span>
-                </div>
-                <div id="l12-content" class="space-y-3 text-sm text-slate-300 min-h-[100px]"></div>
             </div>
         </div>
 
-        <!-- Journey & Charts -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Journey Timeline -->
-            <div class="glass rounded-xl p-6 border border-slate-700/50 h-96 overflow-hidden flex flex-col">
-                <h3 class="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider">Journey of a Request</h3>
-                <div id="journey-timeline" class="relative flex-1 overflow-y-auto terminal-scroll pr-2">
-                    <div class="text-slate-500 text-sm italic">Run a scan to see the journey...</div>
-                </div>
-            </div>
-
-            <!-- Terminal -->
-            <div class="glass rounded-xl p-0 overflow-hidden border border-slate-700/50 flex flex-col h-96">
-                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span class="ml-2 text-xs text-slate-500 font-mono">system_log.sh</span>
-                </div>
-                <div id="terminal-log"
-                    class="p-4 font-mono text-xs text-emerald-500/80 overflow-y-auto flex-1 terminal-scroll space-y-1">
-                    <div>> System initialized...</div>
-                    <canvas id="latencyChart" class="hidden"></canvas> <!-- Hidden chart canvas if not used in terminal direct, used by UI.js -->
-                </div>
-            </div>
-             <!-- Latency Chart (Actually separate card in original, but merged in logic check. Wait, Latency Chart was initialized in original code but not placed in HTML? Ah, I see initChart uses 'latencyChart' ID. Let me look for it in original HTML. -->
-             <!-- Re-checking original HTML... found it? No... wait. initChart() was looking for 'latencyChart'. Where was it? -->
-             <!-- Ah, I missed it in original HTML scan? Let me check Step 18 output carefully. -->
-             <!-- I don't see <canvas id="latencyChart"> in Step 18 output. -->
-             <!-- Wait, line 393: const ctx = document.getElementById('latencyChart').getContext('2d'); -->
-             <!-- But I don't see the canvas element in the HTML body! -->
-             <!-- The original code might have been broken or I missed it. The variable `latencyChart` is created but maybe the element is missing. -->
-             <!-- There is a logic in `initChart`... but where is the canvas? -->
-             <!-- I will add it to the "Journey & Charts" section or inside the terminal? -->
-             <!-- In original, the chart initialization code was there, but maybe the element was missing or I scrolled past it. -->
-             <!-- Actually, looking at the layout, let's put it in a new card or just fix it. I will add a Latency Chart card. -->
-             
-             <!-- Let's add a new card for the Latency Chart to make it robust. -->
-        </div>
-         <div class="glass rounded-xl p-6 border border-slate-700/50 h-64 mt-6">
-            <h3 class="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider">Latency Analysis</h3>
-            <div class="h-full w-full">
-                <canvas id="latencyChart"></canvas>
-            </div>
-        </div>
     </div>
-    
+
     <script type="module" src="/static/js/main.js"></script>
 </body>
 

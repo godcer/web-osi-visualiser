@@ -15,6 +15,7 @@ export class Viz {
 
         this.nodes = [];
         this.particles = [];
+        this.explodedGroup = new THREE.Group();
 
         this.initScene();
         this.animate();
@@ -29,31 +30,91 @@ export class Viz {
     }
 
     initScene() {
+        // Fog for depth
+        this.scene.fog = new THREE.FogExp2(0x000000, 0.02);
+
         // Lights
         const ambientLight = new THREE.AmbientLight(0x404040);
         this.scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(10, 10, 10);
-        this.scene.add(directionalLight);
+        const pointLight = new THREE.PointLight(0x3b82f6, 1, 100);
+        pointLight.position.set(10, 10, 10);
+        this.scene.add(pointLight);
 
-        // Grid (Cyberpunk style)
-        const gridHelper = new THREE.GridHelper(50, 50, 0x1e293b, 0x0f172a);
+        // Cyber Grid Floor
+        const gridHelper = new THREE.GridHelper(100, 100, 0x1e293b, 0x0f172a);
         this.scene.add(gridHelper);
 
-        // Nodes (Client -> Shield -> Cloud -> Server)
-        this.createNode(-10, 0, 0, 0x3b82f6, "Client");
-        this.createNode(-3, 0, 0, 0xf59e0b, "Firewall");
-        this.createNode(3, 0, 0, 0x10b981, "Gateway");
-        this.createNode(10, 0, 0, 0x8b5cf6, "Server");
+        // Standard Graph Mode
+        this.initGraphMode();
+    }
 
-        // Connections
-        this.createConnection(new THREE.Vector3(-10, 0, 0), new THREE.Vector3(-3, 0, 0));
-        this.createConnection(new THREE.Vector3(-3, 0, 0), new THREE.Vector3(3, 0, 0));
-        this.createConnection(new THREE.Vector3(3, 0, 0), new THREE.Vector3(10, 0, 0));
+    initGraphMode() {
+        this.createNode(-10, 2, 0, 0x3b82f6, "Client");
+        this.createNode(0, 2, 0, 0xf59e0b, "Network");
+        this.createNode(10, 2, 0, 0x8b5cf6, "Server");
 
-        this.camera.position.z = 15;
-        this.camera.position.y = 5;
+        // Simple Lines
+        const material = new THREE.LineBasicMaterial({ color: 0x475569 });
+        const points = [
+            new THREE.Vector3(-10, 2, 0),
+            new THREE.Vector3(10, 2, 0)
+        ];
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const line = new THREE.Line(geometry, material);
+        this.scene.add(line);
+
+        this.camera.position.set(0, 5, 15);
         this.camera.lookAt(0, 0, 0);
+    }
+
+    toggleExplodedView(enable) {
+        if (enable) {
+            this.scene.clear(); // Clear graph
+            this.initScene(); // Re-add lights/grid
+
+            // Build Exploded Stack
+            this.createLayerPlate(0, 6, 0, 0xa855f7, "App Data");
+            this.createLayerPlate(0, 4, 0, 0x06b6d4, "TCP Header");
+            this.createLayerPlate(0, 2, 0, 0x10b981, "IP Header");
+            this.createLayerPlate(0, 0, 0, 0xf97316, "Ethernet");
+
+            // Connection lines
+            const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.2 });
+            const points = [new THREE.Vector3(0, 6, 0), new THREE.Vector3(0, 0, 0)];
+            const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), lineMat);
+            this.scene.add(line);
+
+            // Controls
+            this.camera.position.set(5, 5, 10);
+            this.camera.lookAt(0, 3, 0);
+
+        } else {
+            this.scene.clear();
+            this.initScene(); // Re-init graph
+        }
+    }
+
+    createLayerPlate(x, y, z, color, label) {
+        const geometry = new THREE.BoxGeometry(4, 0.5, 4);
+        const edges = new THREE.EdgesGeometry(geometry);
+        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: color }));
+        line.position.set(x, y, z);
+
+        // Inner Glass
+        const mat = new THREE.MeshPhongMaterial({
+            color: color,
+            transparent: true,
+            opacity: 0.1,
+            side: THREE.DoubleSide
+        });
+        const mesh = new THREE.Mesh(geometry, mat);
+        mesh.position.set(x, y, z);
+
+        this.scene.add(line);
+        this.scene.add(mesh);
+
+        // Floating slightly
+        this.nodes.push(line);
     }
 
     createNode(x, y, z, color, label) {
@@ -61,75 +122,45 @@ export class Viz {
         const material = new THREE.MeshPhongMaterial({
             color: color,
             emissive: color,
-            emissiveIntensity: 0.2,
+            emissiveIntensity: 0.5,
             wireframe: true
         });
         const sphere = new THREE.Mesh(geometry, material);
         sphere.position.set(x, y, z);
         this.scene.add(sphere);
         this.nodes.push(sphere);
-
-        // Inner Core
-        const coreGeom = new THREE.IcosahedronGeometry(0.5, 0);
-        const coreMat = new THREE.MeshBasicMaterial({ color: color });
-        const core = new THREE.Mesh(coreGeom, coreMat);
-        sphere.add(core);
-
-        // TODO: Add Label Sprite
     }
 
-    createConnection(start, end) {
-        const material = new THREE.LineBasicMaterial({ color: 0x475569, transparent: true, opacity: 0.5 });
-        const points = [];
-        points.push(start);
-        points.push(end);
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const line = new THREE.Line(geometry, material);
-        this.scene.add(line);
-    }
-
-    spawnParticle() {
-        // Create a data packet particle traveling through the nodes
-        const geometry = new THREE.SphereGeometry(0.2, 8, 8);
-        const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-        const particle = new THREE.Mesh(geometry, material);
-
-        particle.position.set(-10, 0, 0); // Start at Client
-        this.scene.add(particle);
-
-        this.particles.push({
-            mesh: particle,
-            path: [-10, 10], // x range
-            speed: 0.1 + Math.random() * 0.1
-        });
+    spawnAttackParticles() {
+        for (let i = 0; i < 5; i++) {
+            const geo = new THREE.SphereGeometry(0.1);
+            const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const p = new THREE.Mesh(geo, mat);
+            p.position.set((Math.random() - 0.5) * 20, (Math.random()) * 10, (Math.random() - 0.5) * 10);
+            this.scene.add(p);
+            this.particles.push({
+                mesh: p,
+                vel: new THREE.Vector3((Math.random() - 0.5) * 0.5, -0.1, (Math.random() - 0.5) * 0.5)
+            });
+        }
     }
 
     animate() {
         requestAnimationFrame(() => this.animate());
 
         // Rotate nodes
-        this.nodes.forEach(node => {
-            node.rotation.x += 0.005;
-            node.rotation.y += 0.005;
+        this.nodes.forEach((node, idx) => {
+            node.rotation.y += 0.01 * (idx % 2 === 0 ? 1 : -1);
         });
 
-        // Move particles
+        // Particles
         for (let i = this.particles.length - 1; i >= 0; i--) {
             const p = this.particles[i];
-            p.mesh.position.x += p.speed;
-
-            // Pulse effect
-            p.mesh.scale.setScalar(1 + Math.sin(Date.now() * 0.01) * 0.3);
-
-            if (p.mesh.position.x > p.path[1]) {
+            p.mesh.position.add(p.vel);
+            if (p.mesh.position.y < 0) {
                 this.scene.remove(p.mesh);
                 this.particles.splice(i, 1);
             }
-        }
-
-        // Randomly spawn particles
-        if (Math.random() > 0.98) {
-            this.spawnParticle();
         }
 
         this.renderer.render(this.scene, this.camera);

@@ -2,28 +2,47 @@
 import { API } from './api.js';
 import { UI } from './ui.js';
 import { Viz } from './viz.js';
+import { EncapsulationStack } from './stack.js';
+import { AttackSim } from './attack.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize Core Systems
     const ui = new UI();
-    ui.initLog();
-    ui.initChart();
+    ui.init();
 
+    const viz = new Viz('viz-container');
+    const stack = new EncapsulationStack('stack-container');
+    stack.init();
+
+    const attackSim = new AttackSim(ui, viz);
+
+    // 2. Setup API
     const api = new API({
         log: (msg, type) => ui.log(msg, type),
         onStart: () => ui.resetDashboard(),
         updateDashboard: (data) => ui.updateDashboard(data)
     });
 
-    // Event Listeners
+    // 3. Expose Global Functions for HTML Buttons
     window.startAnalysis = () => {
         const url = document.getElementById('targetUrl').value;
         api.startAnalysis(url);
+        // Also play stack animation for effect
+        stack.play();
     };
 
-    window.setModel = (model) => {
-        ui.setModel(model);
+    window.triggerAttack = () => {
+        attackSim.trigger();
     };
 
-    // 3D Viz initialization
-    const viz = new Viz('viz-container');
+    window.toggleHolo = () => {
+        // Toggle Logic
+        window.holoActive = !window.holoActive;
+        viz.toggleExplodedView(window.holoActive);
+        ui.log(window.holoActive ? "Activating Holographic Inspector..." : "Returning to Graph Mode...", "info");
+    };
+
+    window.playStack = () => {
+        stack.play();
+    };
 });
