@@ -5,12 +5,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
+    # WARNING: Change this in production!
     SECRET_KEY: str = "changethis_secret_key_for_production"
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     APP_NAME: str = "Web OSI Intelligence Analyzer"
     APP_ENV: str = "development"
-    DEBUG: bool = True
+    DEBUG: bool = False
     
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 

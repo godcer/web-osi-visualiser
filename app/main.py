@@ -5,6 +5,8 @@ from fastapi.responses import FileResponse
 from app.core.config import settings
 from app.core.logging_config import setup_logging
 import logging
+import os
+from pathlib import Path
 
 # Setup logging
 setup_logging()
@@ -25,12 +27,6 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-# Mount static files
-import os
-from pathlib import Path
-
-# ... (imports)
 
 # Define base path
 BASE_DIR = Path(__file__).resolve().parent.parent
