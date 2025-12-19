@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = document.getElementById('targetUrl').value;
         api.startAnalysis(url);
         // Also play stack animation for effect
-        stack.play();
+        stack.play(ui);
     };
 
     window.triggerAttack = () => {
@@ -43,6 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.playStack = () => {
-        stack.play();
+        stack.play(ui);
     };
 });

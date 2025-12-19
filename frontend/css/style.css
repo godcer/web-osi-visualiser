@@ -202,113 +202,110 @@ body.attack-mode::before {
 
 /* Stack Animation Styles */
 /* Stack Animation Styles */
-.stack-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* HELIX MATRIX HYBRID ENGINE */
+.helix-stage {
+    perspective: 1000px;
     height: 400px;
-    position: relative;
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(59, 130, 246, 0.1) 50%, rgba(0, 0, 0, 0) 100%),
-        repeating-linear-gradient(0deg, transparent 0px, transparent 1px, rgba(59, 130, 246, 0.05) 2px, transparent 3px),
-        rgba(0, 0, 0, 0.6);
-    background-size: 100% 200%, 100% 4px, 100% 100%;
-    animation: scanContainer 4s linear infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, rgba(0, 0, 0, 0.8) 80%);
+    border: 1px solid rgba(16, 185, 129, 0.3);
     border-radius: 8px;
-    padding: 20px;
-    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+    position: relative;
     overflow: hidden;
 }
 
-@keyframes scanContainer {
+.helix-pivot {
+    width: 0;
+    height: 0;
+    transform-style: preserve-3d;
+    animation: spinHelix 15s linear infinite;
+}
+
+.hyper-speed .helix-pivot {
+    animation-duration: 2s;
+    /* Fast spin on play */
+}
+
+@keyframes spinHelix {
     0% {
-        background-position: 0% -100%, 0 0, 0 0;
+        transform: rotateY(0deg);
     }
 
     100% {
-        background-position: 0% 200%, 0 0, 0 0;
+        transform: rotateY(360deg);
     }
 }
 
-/* Holographic Stack Boxes */
-.stack-box {
-    /* Removed fixed width/height/absolute here as they are set inline or by flex */
-    /* Transition is critical for the syncrhonized movement */
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+/* The DNA Strands */
+.helix-strand {
+    position: absolute;
+    width: 20px;
+    height: 400px;
+    top: -200px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-align: center;
+    line-height: 12px;
+    color: #10b981;
+    /* Matrix Green */
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.8);
+    opacity: 0.8;
+}
 
+.strand-a {
+    left: -80px;
+    transform: translateZ(50px);
+    border-right: 1px dashed rgba(16, 185, 129, 0.2);
+}
+
+.strand-b {
+    left: 80px;
+    transform: translateZ(-50px);
+    /* 3D depth */
+    border-left: 1px dashed rgba(16, 185, 129, 0.2);
+}
+
+/* The Layers (Plates connecting strands) */
+.helix-plate {
+    position: absolute;
+    width: 160px;
+    /* Connects -80 to +80 */
+    height: 30px;
+    left: -80px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+
+    color: white;
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     font-weight: bold;
-    color: white;
 
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(2px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
 
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    border-radius: 8px;
-
-    /* Flex Layout for Nesting */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    /* Clip inner content */
+    transition: all 0.3s;
 }
 
-/* Label for the Box */
-.layer-label {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 9px;
-    letter-spacing: 1px;
-    pointer-events: none;
-    z-index: 20;
-    text-shadow: 0 0 5px currentColor;
+.helix-plate.active {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px currentColor;
 }
 
-/* When Box is Child (Nested) */
-.stack-box .stack-box {
-    /* Inner boxes don't need absolute positioning, they follow flex/transform */
-    position: relative !important;
-    left: auto !important;
-    top: auto !important;
-    margin: 0 !important;
-    border-width: 1px;
-    /* Thinner borders? */
-    box-shadow: none;
-    /* Reduce shadow buildup */
+.plate-bits {
+    font-size: 8px;
+    color: #64748b;
+    opacity: 0;
+    /* Hidden normally */
+    transition: opacity 0.3s;
 }
 
-.stack-box.snap-effect {
-    animation: boxSnap 0.4s ease-out forwards;
-    border-color: white;
-}
-
-@keyframes boxSnap {
-    0% {
-        filter: brightness(2) contrast(1.2);
-    }
-
-    100% {
-        filter: brightness(1) contrast(1);
-    }
-}
-
-/* Specific Holographic Colors */
-.box-l2 {
-    border-color: #f97316;
-    box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
-}
-
-/* Hover X-Ray Effect */
-.stack-container:hover .stack-box {
-    background: rgba(0, 0, 0, 0.8);
-    /* Darken to make glowing borders pop */
+.helix-plate:hover .plate-bits,
+.helix-plate.active .plate-bits {
+    opacity: 1;
+    color: #a7f3d0;
 }

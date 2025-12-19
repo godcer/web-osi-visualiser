@@ -4,67 +4,49 @@ export class UI {
         this.latencyChart = null;
         this.terminal = document.getElementById('terminal-log');
 
-        // Code Snippets for "Reveal" feature
-        this.codeSnippets = {
+        // Layer Explanations for "What it does" feature
+        this.layerExplanations = {
             '7': `
-// layer7_application.py
-def analyze_http(packet):
-    if packet.haslayer(HTTP):
-        return {
-            "method": packet[HTTP].Method,
-            "host": packet[HTTP].Host,
-            "user_agent": packet[HTTP].User_Agent
-        }
+**L7: Application Layer**
+The interface you interact with.
+- **Action**: Your browser constructs an HTTP GET request for "google.com".
+- **Real-World**: Like writing a letter and putting it in an envelope.
+- **Key Data**: HTTP Headers, User-Agent, Cookies.
             `,
             '6': `
-// layer6_presentation.py
-def check_tls(packet):
-    if packet.haslayer(TLS):
-        # Extract Cipher and Version
-        version = packet[TLS].version
-        cipher = packet[TLS].cipher_suite
-        return {"version": version, "cipher": cipher}
-    return None
+**L6: Presentation Layer**
+Ensures data is readable and secure.
+- **Action**: Encrypts your request using TLS (SSL) so hackers can't read it.
+- **Real-World**: Translating the letter into a secret code (Encryption).
+- **Key Data**: TLS 1.3 Handshake, Cipher Suites.
             `,
             '5': `
-// layer5_session.py
-def inspect_cookies(headers):
-    cookies = SimpleCookie()
-    cookies.load(headers.get('Cookie', ''))
-    return {
-        k: {"secure": v['secure']} 
-        for k, v in cookies.items()
-    }
+**L5: Session Layer**
+Maintains the conversation.
+- **Action**: Opens a persistent "session" so you don't have to login on every page.
+- **Real-World**: Keeping the phone line open while you talk.
+- **Key Data**: Session IDs, Keep-Alive tokens.
             `,
             '4': `
-// layer4_transport.py
-def analyze_tcp(packet):
-    flags = packet[TCP].flags
-    win_size = packet[TCP].window
-    # Check for SYN Flood signature
-    if flags == 'S':
-        return {"status": "SYN_SENT", "risk": "Medium"}
-    return {"status": "ESTABLISHED"}
+**L4: Transport Layer**
+Reliable delivery and error checking.
+- **Action**: Breaks data into "segments". Uses TCP to ensure every piece arrives.
+- **Real-World**: Numbering the pages of your letter so they can be reassembled.
+- **Key Data**: Source Port (Random), Dest Port (443), Sequence Numbers.
             `,
             '3': `
-// layer3_network.py
-def get_geoip(ip_addr):
-    try:
-        reader = geoip2.database.Reader('GeoLite2.mmdb')
-        resp = reader.city(ip_addr)
-        return {
-            "country": resp.country.name,
-            "lat": resp.location.latitude,
-            "lon": resp.location.longitude
-        }
-    except: return None
+**L3: Network Layer**
+Routing and addressing.
+- **Action**: Adds IP addresses to create "Packets". Decides the path across the internet.
+- **Real-World**: Writing the "To" and "From" addresses on the envelope.
+- **Key Data**: Source IP, Destination IP, TTL (Time To Live).
             `,
             '12': `
-// layer2_datalink.py
-def get_mac_vendor(mac):
-    # OUI Lookup
-    oui = mac[:8].upper()
-    return mac_db.get(oui, "Unknown Vendor")
+**L2: Data Link Layer**
+Physical addressing for the local hop.
+- **Action**: Adds MAC addresses (Ethernet Frame) to get to your Wi-Fi router.
+- **Real-World**: The mail carrier knowing which specific house mailbox to put it in.
+- **Key Data**: Source MAC, Gateway MAC (Router).
             `
         };
     }
@@ -77,13 +59,13 @@ def get_mac_vendor(mac):
 
     initCardFlips() {
         document.querySelectorAll('.layer-card').forEach(card => {
-            // Add Flip Button if not exists
+            // Add Info Button
             const header = card.querySelector('.flex.justify-between');
             if (header) {
                 const btn = document.createElement('button');
-                btn.innerHTML = '&lt; / &gt;'; // Code Icon
-                btn.className = "text-xs bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded ml-2 transition-colors z-20 relative";
-                btn.title = "View Source Code";
+                btn.innerHTML = 'ℹ️ INFO';
+                btn.className = "text-[10px] bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 border border-blue-500/30 px-2 py-1 rounded ml-2 transition-colors z-20 relative font-bold";
+                btn.title = "See what happens here";
                 btn.onclick = (e) => {
                     e.stopPropagation(); // Prevent card click
                     this.flipCard(card);
@@ -99,19 +81,27 @@ def get_mac_vendor(mac):
             inner.className = 'card-inner';
 
             const front = document.createElement('div');
-            front.className = 'card-front p-6'; // Restore padding
+            front.className = 'card-front p-0'; // Restore padding logic if needed, but p-0 from HTML is safer
             front.innerHTML = content;
 
             const back = document.createElement('div');
             back.className = 'card-back';
             const osi = card.getAttribute('data-osi');
-            const code = this.codeSnippets[osi] || '// No code available for this layer';
+            const explanation = this.layerExplanations[osi] || 'Details not available.';
+
+            // Markdown rendering (simple replace for bold/list)
+            const formattedHTML = explanation
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+                .replace(/- (.*)/g, '<li class="ml-4 text-slate-300">$1</li>');
+
             back.innerHTML = `
                 <div class="flex justify-between items-center mb-2 border-b border-white/10 pb-2">
-                    <span class="text-xs font-mono text-blue-400">SOURCE CODE</span>
+                    <span class="text-xs font-mono text-emerald-400">LAYER INTELLIGENCE</span>
                     <button class="text-xs text-slate-400 hover:text-white" onclick="this.closest('.layer-card').classList.remove('flipped'); event.stopPropagation();">Close ✕</button>
                 </div>
-                <pre class="text-[10px] font-mono text-slate-300 overflow-x-auto whitespace-pre-wrap leading-relaxed"><code class="language-python">${this.highlightCode(code)}</code></pre>
+                <div class="text-xs leading-relaxed space-y-2 font-sans opacity-90">
+                    ${formattedHTML}
+                </div>
             `;
 
             inner.appendChild(front);
@@ -119,7 +109,7 @@ def get_mac_vendor(mac):
             card.appendChild(inner);
 
             // Re-bind flip button in the new DOM
-            const newBtn = front.querySelector('button[title="View Source Code"]');
+            const newBtn = front.querySelector('button[title="See what happens here"]');
             if (newBtn) {
                 newBtn.onclick = (e) => {
                     e.stopPropagation();
@@ -133,14 +123,8 @@ def get_mac_vendor(mac):
         card.classList.toggle('flipped');
     }
 
-    highlightCode(code) {
-        // Simple regex highlighter
-        return code
-            .replace(/(def|return|if|else|for|in|try|except)/g, '<span class="code-keyword">$1</span>')
-            .replace(/([a-zA-Z_][a-zA-Z0-9_]*)(?=\()/g, '<span class="code-func">$1</span>')
-            .replace(/(".*?")/g, '<span class="code-string">$1</span>')
-            .replace(/(#.*)/g, '<span class="code-comment">$1</span>');
-    }
+    // highlightCode removed as no longer needed
+
 
     initLog() {
         this.log("> System initialized...");
