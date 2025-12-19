@@ -220,13 +220,19 @@ body.attack-mode::before {
     width: 0;
     height: 0;
     transform-style: preserve-3d;
-    animation: spinHelix 15s linear infinite;
+    transform: rotateY(0deg);
+    /* Static by default */
 }
 
-.hyper-speed .helix-pivot {
-    animation-duration: 2s;
-    /* Fast spin on play */
+.helix-stage.scanning .helix-pivot {
+    animation: spinHelix 4s linear 1 forwards;
 }
+
+/* 
+.hyper-speed .helix-pivot {
+    animation-duration: 2s; 
+} 
+*/
 
 @keyframes spinHelix {
     0% {

@@ -71,31 +71,21 @@ Physical addressing for the local hop.
         document.querySelectorAll('.layer-card').forEach(card => {
             const osi = card.getAttribute('data-osi');
             const attack = this.layerAttacks[osi];
-            const contentDiv = card.querySelector('[id$="-content"]') || card.querySelector('.card-front'); // Fallback to front content container
 
-            if (contentDiv && attack) {
-                // Save original content? For now we just overwrite, resetDashboard restores it.
-                // Or better, we make the card turn RED.
+            // Robust selector: look for ID inside the specific card
+            const targetDisplay = card.querySelector(`[id^="l"][id$="-content"]`);
 
+            if (targetDisplay && attack) {
+                targetDisplay.innerHTML = `
+                    <div class="animate-pulse flex items-start space-x-2 text-red-400">
+                         <span class="text-lg">⚠</span>
+                         <div>
+                             <div class="font-bold text-xs uppercase tracking-wider text-red-500 glitch" data-text="${attack.title}">${attack.title}</div>
+                             <div class="text-[10px] text-red-300/80 mt-1 font-mono">${attack.desc}</div>
+                         </div>
+                    </div>
+                 `;
                 card.classList.add('attack-mode');
-                // We update the INNER HTML of the content div to show the alert
-                // Find or create a specific diagnostic container to avoid breaking structure
-
-                // Simpler: Just replace innerHTML of the content area (e.g. #l7-content)
-                // Note: L2 is slightly different structure in HTML, handled by ID check or generic query
-                const targetDisplay = document.getElementById(`l${osi}-content`) || document.getElementById(`l12-content`);
-
-                if (targetDisplay) {
-                    targetDisplay.innerHTML = `
-                        <div class="animate-pulse flex items-start space-x-2 text-red-400">
-                             <span class="text-lg">⚠</span>
-                             <div>
-                                 <div class="font-bold text-xs uppercase tracking-wider text-red-500 glitch" data-text="${attack.title}">${attack.title}</div>
-                                 <div class="text-[10px] text-red-300/80 mt-1 font-mono">${attack.desc}</div>
-                             </div>
-                        </div>
-                     `;
-                }
             }
         });
 

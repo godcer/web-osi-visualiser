@@ -16,6 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const attackSim = new AttackSim(ui, viz);
 
+    // Default: Activation of Holographic Inspector
+    window.holoActive = true;
+    setTimeout(() => {
+        viz.toggleExplodedView(true);
+        ui.log("Holographic Interface Active.", "info");
+    }, 800);
+
     // 2. Setup API
     const api = new API({
         log: (msg, type) => ui.log(msg, type),

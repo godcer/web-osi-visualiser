@@ -19,8 +19,10 @@ export class EncapsulationStack {
 
         if (uiContext) uiContext.log("Initiating Sequence...", "info");
 
-        // Speed up rotation and code fall
-        this.container.classList.add('hyper-speed');
+        // Trigger Single Rotation
+        this.container.classList.remove('scanning');
+        void this.container.offsetWidth; // Force Reflow
+        this.container.classList.add('scanning');
 
         const layers = ['l7', 'l6', 'l5', 'l4', 'l3', 'l2'];
 
