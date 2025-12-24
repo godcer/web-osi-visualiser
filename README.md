@@ -20,6 +20,7 @@ A premium, interactive visualization tool designed to bridge the gap between abs
 ## 📸 Visuals
 
 *(Attack simulation visualization and 3D interactions)*
+![Dashboard image](assets/image.png)
 
 ## 🚀 Quick Start (Docker)
 
@@ -36,35 +37,40 @@ The easiest way to get the application running is via Docker.
 
 ## 🛠️ Manual Setup
 
-If you prefer running locally without Docker:
-
 ### Prerequisites
-- Python 3.8+
+- Python 3.10+
 - Modern Web Browser (Chrome/Edge recommended)
 
 ### Installation Steps
 
-1.  **Create Virtual Environment**:
+1.  **Create & Activate Virtual Environment**:
     ```bash
     python -m venv venv
+    # Windows:
+    .\venv\Scripts\activate
+    # Mac/Linux:
+    source venv/bin/activate
     ```
 
-2.  **Activate Environment**:
-    - **Windows**: `venv\Scripts\activate`
-    - **Unix/MacOS**: `source venv/bin/activate`
-
-3.  **Install Dependencies**:
+2.  **Install Dependencies**:
+    This project uses `poetry`. If you have poetry installed:
     ```bash
-    pip install -r requirements.txt
+    poetry install
+    ```
+    
+    Or install manually via pip:
+    ```bash
+    pip install fastapi "uvicorn[standard]" pydantic-settings requests dnspython psutil netifaces aiohttp scapy jinja2 python-multipart email-validator httpx websockets
     ```
 
-4.  **Start Backend**:
+3.  **Start Backend**:
     ```bash
     uvicorn app.main:app --reload
     ```
 
-5.  **Launch Frontend**:
-    Open `frontend/index.html` directly in your browser or serve it via a simple HTTP server.
+4.  **Access App**:
+    Open [http://localhost:8000](http://localhost:8000) in your browser.
+    *(The backend automatically serves the frontend)*
 
 ## 💻 Tech Stack
 
