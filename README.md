@@ -1,47 +1,78 @@
+![OSI Visualizer Banner](assets/banner.png)
+
 # OSI Visualizer with Cyber SOC UI
 
-A premium, interactive visualization tool for the OSI model and Cyber SOC operations.
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.68%2B-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-## Features
-- **3D OSI Model**: Interactive exploded view of OSI layers.
-- **Cyber SOC Dashboard**: Real-time visualization of mock security alerts and verify traffic.
-- **Attack Simulation**: Visual simulation of DDoS attacks on OSI layers.
-- **Protocol Helix**: Dynamic visualization of network protocols.
+A premium, interactive visualization tool designed to bridge the gap between abstract network concepts and real-time security operations. This project features a 3D exploded view of the OSI model integrated with a high-fidelity Cyber SOC dashboard.
 
-## Quick Start (Docker)
+## ✨ Features
 
-The easiest way to run the application is using Docker.
+- **🌐 3D OSI Model**: Interactive, exploded view of OSI layers allowing deep inspection of protocols at each level.
+- **🛡️ Cyber SOC Dashboard**: Real-time visualization of simulated security alerts, network traffic, and threat intelligence.
+- **⚔️ Attack Simulation**: Visual simulation of DDoS attacks affecting specific OSI layers with real-time feedback.
+- **🧬 Protocol Helix**: Dynamic, 3D visualization of network protocols demonstrating encapsulation and decapsulation.
+- **⚡ Reactive UI**: Glassmorphism-inspired interface with neon accents, smooth animations, and responsiveness.
 
-1.  **Install Docker Desktop** if you haven't already.
-2.  Run the following command in the project root:
+## 📸 Visuals
+
+*(Attack simulation visualization and 3D interactions)*
+
+## 🚀 Quick Start (Docker)
+
+The easiest way to get the application running is via Docker.
+
+1.  **Prerequisites**: Ensure [Docker Desktop](https://www.docker.com/products/docker-desktop) is installed.
+2.  **Clone & Run**:
     ```bash
+    git clone <repository-url>
+    cd osi-visualizer
     docker-compose up --build
     ```
-3.  Open [http://localhost:8000/frontend/index.html](http://localhost:8000/frontend/index.html) in your browser.
+3.  **Access**: Open [http://localhost:8000/frontend/index.html](http://localhost:8000/frontend/index.html) in your browser.
 
-## Manual Setup (Alternative)
+## 🛠️ Manual Setup
+
+If you prefer running locally without Docker:
 
 ### Prerequisites
 - Python 3.8+
 - Modern Web Browser (Chrome/Edge recommended)
 
-### Steps
-1. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   ```
-2. Activate the virtual environment:
-   - Windows: `venv\Scripts\activate`
-   - Unix: `source venv/bin/activate`
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Start the backend server:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-5. Open `frontend/index.html` in your browser.
+### Installation Steps
 
-## License
-MIT
+1.  **Create Virtual Environment**:
+    ```bash
+    python -m venv venv
+    ```
+
+2.  **Activate Environment**:
+    - **Windows**: `venv\Scripts\activate`
+    - **Unix/MacOS**: `source venv/bin/activate`
+
+3.  **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Start Backend**:
+    ```bash
+    uvicorn app.main:app --reload
+    ```
+
+5.  **Launch Frontend**:
+    Open `frontend/index.html` directly in your browser or serve it via a simple HTTP server.
+
+## 💻 Tech Stack
+
+- **Backend**: Python, FastAPI, Uvicorn
+- **Frontend**: HTML5, CSS3 (Glassmorphism), JavaScript (ES6+)
+- **Visualization**: Custom CSS 3D Transforms (No external 3D libraries used for core helix/OSI layers to ensure performance)
+- **Containerization**: Docker, Docker Compose
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
