@@ -11,17 +11,9 @@ RUN apt-get update && apt-get install -y \
     traceroute \
     && rm -rf /var/lib/apt/lists/*
 
-# Install poetry
-RUN pip install poetry
-
-# Copy project files
-COPY pyproject.toml poetry.lock* ./
-
-# Configure poetry to not create a virtualenv
-RUN poetry config virtualenvs.create false
-
 # Install dependencies
-RUN poetry install --no-dev --no-interaction --no-ansi
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy app code
 COPY . .

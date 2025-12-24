@@ -8,13 +8,24 @@ A premium, interactive visualization tool for the OSI model and Cyber SOC operat
 - **Attack Simulation**: Visual simulation of DDoS attacks on OSI layers.
 - **Protocol Helix**: Dynamic visualization of network protocols.
 
-## Setup
+## Quick Start (Docker)
+
+The easiest way to run the application is using Docker.
+
+1.  **Install Docker Desktop** if you haven't already.
+2.  Run the following command in the project root:
+    ```bash
+    docker-compose up --build
+    ```
+3.  Open [http://localhost:8000/frontend/index.html](http://localhost:8000/frontend/index.html) in your browser.
+
+## Manual Setup (Alternative)
 
 ### Prerequisites
 - Python 3.8+
 - Modern Web Browser (Chrome/Edge recommended)
 
-### Backend Setup
+### Steps
 1. Create a virtual environment:
    ```bash
    python -m venv venv
@@ -26,16 +37,11 @@ A premium, interactive visualization tool for the OSI model and Cyber SOC operat
    ```bash
    pip install -r requirements.txt
    ```
-   *(Note: If requirements.txt is missing, install dependencies from pyproject.toml)*
-
-### Running the Application
-1. Start the backend server:
+4. Start the backend server:
    ```bash
    uvicorn app.main:app --reload
    ```
-2. Open the frontend:
-   - Navigate to the `frontend` directory and open `index.html` in your browser.
-   - OR assume the backend serves the static files (check configuration).
+5. Open `frontend/index.html` in your browser.
 
 ## License
 MIT
