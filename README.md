@@ -24,7 +24,7 @@ A premium, interactive visualization tool designed to bridge the gap between abs
 
 ### Live Demo (Video)
 
-<video src="assets/video.webm" controls="controls" width="100%">
+<video src="assets/video.mp4" controls="controls" width="100%">
     Your browser does not support the video tag.
 </video>
 
