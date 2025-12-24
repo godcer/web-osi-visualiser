@@ -19,8 +19,14 @@ A premium, interactive visualization tool designed to bridge the gap between abs
 
 ## 📸 Visuals
 
-*(Attack simulation visualization and 3D interactions)*
+### Attack Simulation & Dashboard
 ![Dashboard image](assets/image.png)
+
+### Live Demo (Video)
+
+<video src="assets/video.webm" controls="controls" width="100%">
+    Your browser does not support the video tag.
+</video>
 
 ## 🚀 Quick Start (Docker)
 
